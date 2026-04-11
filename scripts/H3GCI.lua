@@ -1,7 +1,7 @@
 -- ===== H-3 MAIN GCI SYSTEM =====
 -- Sistema CAP + GCI per difesa dello spazio aereo di H-3
 -- CAP persistente (MiG-29A) + GCI reattivo (MiG-29A scramble)
--- Versione: 1.1 - Missione Iraq 2026
+-- Versione: 1.2 - Missione Iraq 2026
 --
 -- REQUISITI MISSION EDITOR:
 --   STATIC OBJECT (RED): "RedAirWingH3CAP"  — piazzato a H-3 (< 5km dalla pista)
@@ -30,34 +30,37 @@ end
 local capCenter = BorderZone:GetCoordinate()
 
 -- ==================================================
--- 2. COHORTS (ex SQUADRON — fix MOOSE 2.9.x)
+-- 2. COHORTS
+-- FIX: COHORT:New() restituisce un oggetto anche se il template non esiste.
+-- Verifica robusta tramite GROUP:FindByName prima di istanziare.
 -- ==================================================
 
--- FIX: SQUADRON:New() è deprecato in MOOSE 2.9.x, usare COHORT:New()
-local sqCAP = COHORT:New("RedCAPH3", 4, "H3-CAP-MiG29")
-if not sqCAP then
-    env.error("H3GCI: ERRORE - Gruppo template 'RedCAPH3' non trovato nel ME!")
-else
+local sqCAP = nil
+if GROUP:FindByName("RedCAPH3") then
+    sqCAP = COHORT:New("RedCAPH3", 4, "H3-CAP-MiG29")
     sqCAP:AddMissionCapability({ AUFTRAG.Type.GCICAP, AUFTRAG.Type.INTERCEPT }, 90)
     sqCAP:SetGrouping(2)
     sqCAP:SetTakeoffHot()
     sqCAP:SetFuelLowThreshold(0.3)
     sqCAP:SetFuelLowRefuel(false)
     sqCAP:SetTurnoverTime(15, 30)
-    env.info("H3GCI: Squadron CAP MiG-29 configurato")
+    env.info("H3GCI: COHORT CAP MiG-29 configurato")
+else
+    env.error("H3GCI: ERRORE - Gruppo template 'RedCAPH3' non trovato nel ME! (Late Activation richiesta)")
 end
 
-local sqGCI = COHORT:New("RedGCIH3", 4, "H3-GCI-MiG29")
-if not sqGCI then
-    env.error("H3GCI: ERRORE - Gruppo template 'RedGCIH3' non trovato nel ME!")
-else
+local sqGCI = nil
+if GROUP:FindByName("RedGCIH3") then
+    sqGCI = COHORT:New("RedGCIH3", 4, "H3-GCI-MiG29")
     sqGCI:AddMissionCapability({ AUFTRAG.Type.INTERCEPT, AUFTRAG.Type.GCICAP }, 90)
     sqGCI:SetGrouping(2)
     sqGCI:SetTakeoffHot()
     sqGCI:SetFuelLowThreshold(0.3)
     sqGCI:SetFuelLowRefuel(false)
     sqGCI:SetTurnoverTime(10, 20)
-    env.info("H3GCI: Squadron GCI MiG-29 configurato")
+    env.info("H3GCI: COHORT GCI MiG-29 configurato")
+else
+    env.error("H3GCI: ERRORE - Gruppo template 'RedGCIH3' non trovato nel ME! (Late Activation richiesta)")
 end
 
 -- ==================================================
@@ -65,7 +68,6 @@ end
 -- ==================================================
 local _anchorCAP = StaticObject.getByName("RedAirWingH3CAP")
 if not _anchorCAP then
-    -- FIX: rimosso "return" — non bloccare il GCI se CAP manca
     env.error("H3GCI: ERRORE CRITICO - 'RedAirWingH3CAP' non trovato nel ME!")
 end
 
@@ -80,7 +82,6 @@ if _anchorCAP then
         AirWingCAP:SetNumberCAP(1)
         if sqCAP then
             AirWingCAP:AddSquadron(sqCAP)
-            -- FIX: NewPayload vuole il tipo aereo, non il nome gruppo
             AirWingCAP:NewPayload("MiG-29 Fulcrum", -1, { AUFTRAG.Type.GCICAP, AUFTRAG.Type.INTERCEPT }, 90)
         end
         AirWingCAP:AddPatrolPointCAP(capCenter, 27000, 300, 90, 40)
@@ -94,7 +95,6 @@ end
 -- ==================================================
 local _anchorGCI = StaticObject.getByName("RedAirWingH3GCI")
 if not _anchorGCI then
-    -- FIX: rimosso "return" — logga l'errore ma non bloccare il resto
     env.error("H3GCI: ERRORE CRITICO - 'RedAirWingH3GCI' non trovato nel ME!")
 end
 
@@ -108,7 +108,6 @@ if _anchorGCI then
         AirWingGCI:SetDespawnAfterLanding()
         if sqGCI then
             AirWingGCI:AddSquadron(sqGCI)
-            -- FIX: NewPayload vuole il tipo aereo, non il nome gruppo
             AirWingGCI:NewPayload("MiG-29 Fulcrum", -1, { AUFTRAG.Type.INTERCEPT, AUFTRAG.Type.GCICAP }, 90)
         end
         AirWingGCI:Start()
@@ -127,7 +126,6 @@ local Detection = DETECTION_AREAS:New(DetectionSetGroup, 100000)
 local gciLastScramble = {}
 local GCI_COOLDOWN_SEC = 300
 
--- FIX: OnAfterDetectedItem non esiste in MOOSE 2.9.x — usare OnAfterDetected con ForEachGroup
 function Detection:OnAfterDetected(From, Event, To, DetectedSet)
     if not AirWingGCI then return end
     if not DetectedSet then return end
