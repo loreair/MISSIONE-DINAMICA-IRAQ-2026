@@ -19,6 +19,11 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2.9.
 | **CNV-71 ROOSEVELT** | F-18C Hornet | 71X | CH 1 |
 | **CNV-73 WASHINGTON** | F-14B Tomcat | 73X | CH 3 |
 
+### AWACS
+| Callsign | Frequenza | TACAN | Orbita |
+|---|---|---|---|
+| **Darkstar** (E-3A) | 270.0 AM | 1X DAR | Golfo Persico / Kuwait |
+
 ---
 
 ## 🔴 Coalizione RED — CAP Dinamico
@@ -29,6 +34,18 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2.9.
 | Kirkuk Air Base | MiG-23MLD | `RED_MiG23MLD_KIRKUK_01` |
 | Mosul Airport | MiG-21Bis | `RED_MiG21Bis_MOSUL_01` |
 | Al Kut Airfield | MiG-29A | `RED_MiG29_AL KUT_01` |
+
+---
+
+## 📶 Frequenze radio
+
+| Servizio | Frequenza | Note |
+|---|---|---|
+| AWACS Darkstar | 270.0 AM | Copertura teatro |
+| Roosevelt Marshal | 305.0 AM | F-18 |
+| Roosevelt LSO | 264.0 AM | F-18 |
+| Washington Marshal | 307.0 AM | F-14 |
+| Washington LSO | 265.0 AM | F-14 |
 
 ---
 
@@ -64,6 +81,6 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2.9.
 - [x] Basi BLUE definite
 - [x] Portaerei con AIRBOSS
 - [x] CAP RED dinamico con respawn
-- [ ] AWACS BLUE
+- [x] AWACS BLUE Darkstar
 - [ ] Zone di cattura dinamiche
 - [ ] CSAR con elicotteri
