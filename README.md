@@ -67,8 +67,28 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2.9.
 |---|---|---|---|
 | 1 | MISSION START | DO SCRIPT FILE | `Moose_.lua` |
 | 2 | TIME MORE 5 | DO SCRIPT FILE | `missione_iraq.lua` |
+| 3 | TIME MORE 41400 | DO SCRIPT | Avviso restart 30 min |
+| 4 | TIME MORE 42600 | DO SCRIPT | Avviso restart 10 min |
+| 5 | TIME MORE 43140 | DO SCRIPT | Avviso restart 1 min |
+| 6 | TIME MORE 43200 | DO SCRIPT | `net.load_next_mission()` |
 
-> ⚠️ Il trigger di test carrier (DO SCRIPT diretto) va a **TIME MORE 3** — solo temporaneo, da eliminare dopo la verifica.
+> ⚠️ La missione va inserita **due volte** nella playlist del server per garantire il restart corretto.
+
+---
+
+## ✅ Verifica nomi gruppi (11 Aprile 2026)
+
+Tutti i nomi dei gruppi sono stati verificati e risultano corretti:
+
+| Gruppo | Stato |
+|---|---|
+| `RED_MiG29_H3_01` | ✅ Verificato |
+| `RED_MiG23MLD_KIRKUK_01` | ✅ Verificato |
+| `RED_MiG21Bis_MOSUL_01` | ✅ Verificato |
+| `RED_MiG29_AL KUT_01` | ✅ Verificato |
+| `BLUE_AWACS_01` | ✅ Verificato |
+| `CNV-71 ROOSEVELT` | ✅ Verificato |
+| `CNV-73 WASHINGTON` | ✅ Verificato |
 
 ---
 
@@ -84,5 +104,7 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2.9.
 - [x] Portaerei con AIRBOSS
 - [x] CAP RED dinamico con respawn
 - [x] AWACS BLUE Darkstar
+- [x] Restart automatico ogni 12 ore
+- [x] Verifica nomi gruppi ✅
 - [ ] Zone di cattura dinamiche
 - [ ] CSAR con elicotteri
