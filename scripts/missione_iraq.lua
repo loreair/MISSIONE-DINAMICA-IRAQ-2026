@@ -5,13 +5,14 @@
 
 -- ============================================================
 -- SEZIONE 1: SPAWN DINAMICO CAP RED con respawn automatico
+-- Al Kut gestito separatamente da AlKutGCI.lua
 -- ============================================================
 
 -- H-3 Main: MiG-29A
 local Spawn_MiG29_H3 = SPAWN:New("RED_MiG29_H3_01")
   :InitLimit(4, 8)
   :InitRandomizeRoute(1, 2, 15000)
-  :InitRepeatOnEngineShutdown()
+  :InitRepeatOnLanding()
   :OnSpawnGroup(function(grp)
       grp:OptionROEOpenFire()
       grp:OptionAlarmStateRed()
@@ -22,7 +23,7 @@ Spawn_MiG29_H3:SpawnScheduled(60, 0.3)
 local Spawn_MiG23_Kirkuk = SPAWN:New("RED_MiG23MLD_KIRKUK_01")
   :InitLimit(4, 8)
   :InitRandomizeRoute(1, 2, 12000)
-  :InitRepeatOnEngineShutdown()
+  :InitRepeatOnLanding()
   :OnSpawnGroup(function(grp)
       grp:OptionROEOpenFire()
       grp:OptionAlarmStateRed()
@@ -33,23 +34,12 @@ Spawn_MiG23_Kirkuk:SpawnScheduled(90, 0.3)
 local Spawn_MiG21_Mosul = SPAWN:New("RED_MiG21Bis_MOSUL_01")
   :InitLimit(4, 6)
   :InitRandomizeRoute(1, 2, 10000)
-  :InitRepeatOnEngineShutdown()
+  :InitRepeatOnLanding()
   :OnSpawnGroup(function(grp)
       grp:OptionROEOpenFire()
       grp:OptionAlarmStateRed()
   end)
 Spawn_MiG21_Mosul:SpawnScheduled(120, 0.3)
-
--- Al Kut: MiG-29A
-local Spawn_MiG29_AlKut = SPAWN:New("RED_MiG29_AL KUT_01")
-  :InitLimit(4, 8)
-  :InitRandomizeRoute(1, 2, 15000)
-  :InitRepeatOnEngineShutdown()
-  :OnSpawnGroup(function(grp)
-      grp:OptionROEOpenFire()
-      grp:OptionAlarmStateRed()
-  end)
-Spawn_MiG29_AlKut:SpawnScheduled(180, 0.3)
 
 -- ============================================================
 -- SEZIONE 2: PORTAEREI BLUE - AIRBOSS
@@ -77,7 +67,7 @@ Airboss_Washington:Start()
 -- SEZIONE 3: MESSAGGI DI BRIEFING ALL'AVVIO
 -- ============================================================
 
-MESSAGE:New("MISSIONE ATTIVA - CAP RED in decollo da H-3, Kirkuk, Mosul, Al Kut", 20, "INTEL"):ToAll()
+MESSAGE:New("MISSIONE ATTIVA - CAP RED da H-3, Kirkuk, Mosul | GCI ATTIVO: Al Kut", 20, "INTEL"):ToAll()
 MESSAGE:New("Roosevelt TACAN 71X ICLS 01 | Washington TACAN 73X ICLS 03", 20, "CARRIER OPS"):ToAll()
 MESSAGE:New("AWACS DARKSTAR attivo su 270.0 AM - TACAN 1X DAR", 20, "AWACS"):ToAll()
 
