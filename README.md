@@ -66,7 +66,9 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2.9.
 | N° | Condizione | Azione | File |
 |---|---|---|---|
 | 1 | MISSION START | DO SCRIPT FILE | `Moose_.lua` |
-| 2 | TIME MORE 3 | DO SCRIPT FILE | `missione_iraq.lua` |
+| 2 | TIME MORE 5 | DO SCRIPT FILE | `missione_iraq.lua` |
+
+> ⚠️ Il trigger di test carrier (DO SCRIPT diretto) va a **TIME MORE 3** — solo temporaneo, da eliminare dopo la verifica.
 
 ---
 
