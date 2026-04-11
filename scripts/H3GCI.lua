@@ -1,7 +1,7 @@
 -- ===== H-3 MAIN GCI SYSTEM =====
 -- Sistema CAP + GCI per difesa dello spazio aereo di H-3
 -- CAP persistente (MiG-29A) + GCI reattivo (MiG-29A scramble)
--- Versione: 1.0 - Missione Iraq 2026
+-- Versione: 1.1 - Missione Iraq 2026
 --
 -- REQUISITI MISSION EDITOR:
 --   STATIC OBJECT (RED): "RedAirWingH3CAP"  — piazzato a H-3 (< 5km dalla pista)
@@ -30,10 +30,11 @@ end
 local capCenter = BorderZone:GetCoordinate()
 
 -- ==================================================
--- 2. SQUADRONS
+-- 2. COHORTS (ex SQUADRON — fix MOOSE 2.9.x)
 -- ==================================================
 
-local sqCAP = SQUADRON:New("RedCAPH3", 4, "H3-CAP-MiG29")
+-- FIX: SQUADRON:New() è deprecato in MOOSE 2.9.x, usare COHORT:New()
+local sqCAP = COHORT:New("RedCAPH3", 4, "H3-CAP-MiG29")
 if not sqCAP then
     env.error("H3GCI: ERRORE - Gruppo template 'RedCAPH3' non trovato nel ME!")
 else
@@ -46,7 +47,7 @@ else
     env.info("H3GCI: Squadron CAP MiG-29 configurato")
 end
 
-local sqGCI = SQUADRON:New("RedGCIH3", 4, "H3-GCI-MiG29")
+local sqGCI = COHORT:New("RedGCIH3", 4, "H3-GCI-MiG29")
 if not sqGCI then
     env.error("H3GCI: ERRORE - Gruppo template 'RedGCIH3' non trovato nel ME!")
 else
@@ -64,24 +65,28 @@ end
 -- ==================================================
 local _anchorCAP = StaticObject.getByName("RedAirWingH3CAP")
 if not _anchorCAP then
+    -- FIX: rimosso "return" — non bloccare il GCI se CAP manca
     env.error("H3GCI: ERRORE CRITICO - 'RedAirWingH3CAP' non trovato nel ME!")
-    return
 end
 
-local AirWingCAP = AIRWING:New("RedAirWingH3CAP", "H3 Red AirWing CAP")
-if not AirWingCAP then
-    env.error("H3GCI: ERRORE - AIRWING CAP non inizializzato.")
-else
-    AirWingCAP:SetTakeoffHot()
-    AirWingCAP:SetDespawnAfterLanding()
-    AirWingCAP:SetNumberCAP(1)
-    if sqCAP then
-        AirWingCAP:AddSquadron(sqCAP)
-        AirWingCAP:NewPayload("RedCAPH3", -1, { AUFTRAG.Type.GCICAP, AUFTRAG.Type.INTERCEPT }, 90)
+local AirWingCAP = nil
+if _anchorCAP then
+    AirWingCAP = AIRWING:New("RedAirWingH3CAP", "H3 Red AirWing CAP")
+    if not AirWingCAP then
+        env.error("H3GCI: ERRORE - AIRWING CAP non inizializzato.")
+    else
+        AirWingCAP:SetTakeoffHot()
+        AirWingCAP:SetDespawnAfterLanding()
+        AirWingCAP:SetNumberCAP(1)
+        if sqCAP then
+            AirWingCAP:AddSquadron(sqCAP)
+            -- FIX: NewPayload vuole il tipo aereo, non il nome gruppo
+            AirWingCAP:NewPayload("MiG-29 Fulcrum", -1, { AUFTRAG.Type.GCICAP, AUFTRAG.Type.INTERCEPT }, 90)
+        end
+        AirWingCAP:AddPatrolPointCAP(capCenter, 27000, 300, 90, 40)
+        AirWingCAP:Start()
+        env.info("H3GCI: AIRWING CAP avviato")
     end
-    AirWingCAP:AddPatrolPointCAP(capCenter, 27000, 300, 90, 40)
-    AirWingCAP:Start()
-    env.info("H3GCI: AIRWING CAP avviato")
 end
 
 -- ==================================================
@@ -89,22 +94,26 @@ end
 -- ==================================================
 local _anchorGCI = StaticObject.getByName("RedAirWingH3GCI")
 if not _anchorGCI then
+    -- FIX: rimosso "return" — logga l'errore ma non bloccare il resto
     env.error("H3GCI: ERRORE CRITICO - 'RedAirWingH3GCI' non trovato nel ME!")
-    return
 end
 
-local AirWingGCI = AIRWING:New("RedAirWingH3GCI", "H3 Red AirWing GCI")
-if not AirWingGCI then
-    env.error("H3GCI: ERRORE - AIRWING GCI non inizializzato.")
-else
-    AirWingGCI:SetTakeoffHot()
-    AirWingGCI:SetDespawnAfterLanding()
-    if sqGCI then
-        AirWingGCI:AddSquadron(sqGCI)
-        AirWingGCI:NewPayload("RedGCIH3", -1, { AUFTRAG.Type.INTERCEPT, AUFTRAG.Type.GCICAP }, 90)
+local AirWingGCI = nil
+if _anchorGCI then
+    AirWingGCI = AIRWING:New("RedAirWingH3GCI", "H3 Red AirWing GCI")
+    if not AirWingGCI then
+        env.error("H3GCI: ERRORE - AIRWING GCI non inizializzato.")
+    else
+        AirWingGCI:SetTakeoffHot()
+        AirWingGCI:SetDespawnAfterLanding()
+        if sqGCI then
+            AirWingGCI:AddSquadron(sqGCI)
+            -- FIX: NewPayload vuole il tipo aereo, non il nome gruppo
+            AirWingGCI:NewPayload("MiG-29 Fulcrum", -1, { AUFTRAG.Type.INTERCEPT, AUFTRAG.Type.GCICAP }, 90)
+        end
+        AirWingGCI:Start()
+        env.info("H3GCI: AIRWING GCI avviato")
     end
-    AirWingGCI:Start()
-    env.info("H3GCI: AIRWING GCI avviato")
 end
 
 -- ==================================================
@@ -118,13 +127,12 @@ local Detection = DETECTION_AREAS:New(DetectionSetGroup, 100000)
 local gciLastScramble = {}
 local GCI_COOLDOWN_SEC = 300
 
-function Detection:OnAfterDetectedItem(From, Event, To, DetectedItem)
+-- FIX: OnAfterDetectedItem non esiste in MOOSE 2.9.x — usare OnAfterDetected con ForEachGroup
+function Detection:OnAfterDetected(From, Event, To, DetectedSet)
     if not AirWingGCI then return end
-    if not DetectedItem or not DetectedItem.Set then return end
+    if not DetectedSet then return end
     local dispatched = {}
-    DetectedItem.Set:ForEachUnit(function(unit)
-        if not unit or not unit:IsAlive() then return end
-        local grp = unit:GetGroup()
+    DetectedSet:ForEachGroup(function(grp)
         if not grp or not grp:IsAlive() then return end
         local gName = grp:GetName()
         if dispatched[gName] then return end
