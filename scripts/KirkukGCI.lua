@@ -1,7 +1,7 @@
 -- ===== KIRKUK GCI SYSTEM =====
 -- Sistema CAP + GCI per difesa dello spazio aereo di Kirkuk
 -- CAP persistente (MiG-23MLD) + GCI reattivo (MiG-23MLD scramble)
--- Versione: 1.0 - Missione Iraq 2026
+-- Versione: 1.1 - Missione Iraq 2026
 --
 -- REQUISITI MISSION EDITOR:
 --   STATIC OBJECT (RED): "RedAirWingKirkukCAP"  — piazzato a Kirkuk (< 5km dalla pista)
@@ -108,13 +108,13 @@ else
 end
 
 -- ==================================================
--- 4. DETECTION + GCI REATTIVO
+-- 4. DETECTION + GCI REATTIVO (FIX: raggio 100km → 60km)
 -- ==================================================
 local DetectionSetGroup = SET_GROUP:New()
 DetectionSetGroup:FilterPrefixes({ "KirkukEW" })
 DetectionSetGroup:FilterStart()
 
-local Detection = DETECTION_AREAS:New(DetectionSetGroup, 100000)
+local Detection = DETECTION_AREAS:New(DetectionSetGroup, 60000)
 local gciLastScramble = {}
 local GCI_COOLDOWN_SEC = 300
 
