@@ -1,7 +1,7 @@
 -- ===== H-3 MAIN GCI SYSTEM =====
 -- Sistema CAP + GCI per difesa dello spazio aereo di H-3
 -- CAP persistente (MiG-29A) + GCI reattivo (MiG-29A scramble)
--- Versione: 1.2 - Missione Iraq 2026
+-- Versione: 1.3 - Missione Iraq 2026
 --
 -- REQUISITI MISSION EDITOR:
 --   STATIC OBJECT (RED): "RedAirWingH3CAP"  — piazzato a H-3 (< 5km dalla pista)
@@ -30,37 +30,33 @@ end
 local capCenter = BorderZone:GetCoordinate()
 
 -- ==================================================
--- 2. COHORTS
--- FIX: COHORT:New() restituisce un oggetto anche se il template non esiste.
--- Verifica robusta tramite GROUP:FindByName prima di istanziare.
+-- 2. SQUADRONS (FIX: era COHORT, ora allineato a Kirkuk/Mosul/AlKut)
 -- ==================================================
 
-local sqCAP = nil
-if GROUP:FindByName("RedCAPH3") then
-    sqCAP = COHORT:New("RedCAPH3", 4, "H3-CAP-MiG29")
+local sqCAP = SQUADRON:New("RedCAPH3", 4, "H3-CAP-MiG29")
+if not sqCAP then
+    env.error("H3GCI: ERRORE - Gruppo template 'RedCAPH3' non trovato nel ME!")
+else
     sqCAP:AddMissionCapability({ AUFTRAG.Type.GCICAP, AUFTRAG.Type.INTERCEPT }, 90)
     sqCAP:SetGrouping(2)
     sqCAP:SetTakeoffHot()
     sqCAP:SetFuelLowThreshold(0.3)
     sqCAP:SetFuelLowRefuel(false)
     sqCAP:SetTurnoverTime(15, 30)
-    env.info("H3GCI: COHORT CAP MiG-29 configurato")
-else
-    env.error("H3GCI: ERRORE - Gruppo template 'RedCAPH3' non trovato nel ME! (Late Activation richiesta)")
+    env.info("H3GCI: Squadron CAP MiG-29 configurato")
 end
 
-local sqGCI = nil
-if GROUP:FindByName("RedGCIH3") then
-    sqGCI = COHORT:New("RedGCIH3", 4, "H3-GCI-MiG29")
+local sqGCI = SQUADRON:New("RedGCIH3", 4, "H3-GCI-MiG29")
+if not sqGCI then
+    env.error("H3GCI: ERRORE - Gruppo template 'RedGCIH3' non trovato nel ME!")
+else
     sqGCI:AddMissionCapability({ AUFTRAG.Type.INTERCEPT, AUFTRAG.Type.GCICAP }, 90)
     sqGCI:SetGrouping(2)
     sqGCI:SetTakeoffHot()
     sqGCI:SetFuelLowThreshold(0.3)
     sqGCI:SetFuelLowRefuel(false)
     sqGCI:SetTurnoverTime(10, 20)
-    env.info("H3GCI: COHORT GCI MiG-29 configurato")
-else
-    env.error("H3GCI: ERRORE - Gruppo template 'RedGCIH3' non trovato nel ME! (Late Activation richiesta)")
+    env.info("H3GCI: Squadron GCI MiG-29 configurato")
 end
 
 -- ==================================================
@@ -69,25 +65,23 @@ end
 local _anchorCAP = StaticObject.getByName("RedAirWingH3CAP")
 if not _anchorCAP then
     env.error("H3GCI: ERRORE CRITICO - 'RedAirWingH3CAP' non trovato nel ME!")
+    return
 end
 
-local AirWingCAP = nil
-if _anchorCAP then
-    AirWingCAP = AIRWING:New("RedAirWingH3CAP", "H3 Red AirWing CAP")
-    if not AirWingCAP then
-        env.error("H3GCI: ERRORE - AIRWING CAP non inizializzato.")
-    else
-        AirWingCAP:SetTakeoffHot()
-        AirWingCAP:SetDespawnAfterLanding()
-        AirWingCAP:SetNumberCAP(1)
-        if sqCAP then
-            AirWingCAP:AddSquadron(sqCAP)
-            AirWingCAP:NewPayload("MiG-29 Fulcrum", -1, { AUFTRAG.Type.GCICAP, AUFTRAG.Type.INTERCEPT }, 90)
-        end
-        AirWingCAP:AddPatrolPointCAP(capCenter, 27000, 300, 90, 40)
-        AirWingCAP:Start()
-        env.info("H3GCI: AIRWING CAP avviato")
+local AirWingCAP = AIRWING:New("RedAirWingH3CAP", "H3 Red AirWing CAP")
+if not AirWingCAP then
+    env.error("H3GCI: ERRORE - AIRWING CAP non inizializzato.")
+else
+    AirWingCAP:SetTakeoffHot()
+    AirWingCAP:SetDespawnAfterLanding()
+    AirWingCAP:SetNumberCAP(1)
+    if sqCAP then
+        AirWingCAP:AddSquadron(sqCAP)
+        AirWingCAP:NewPayload("RedCAPH3", -1, { AUFTRAG.Type.GCICAP, AUFTRAG.Type.INTERCEPT }, 90)
     end
+    AirWingCAP:AddPatrolPointCAP(capCenter, 27000, 300, 90, 40)
+    AirWingCAP:Start()
+    env.info("H3GCI: AIRWING CAP avviato")
 end
 
 -- ==================================================
@@ -96,23 +90,21 @@ end
 local _anchorGCI = StaticObject.getByName("RedAirWingH3GCI")
 if not _anchorGCI then
     env.error("H3GCI: ERRORE CRITICO - 'RedAirWingH3GCI' non trovato nel ME!")
+    return
 end
 
-local AirWingGCI = nil
-if _anchorGCI then
-    AirWingGCI = AIRWING:New("RedAirWingH3GCI", "H3 Red AirWing GCI")
-    if not AirWingGCI then
-        env.error("H3GCI: ERRORE - AIRWING GCI non inizializzato.")
-    else
-        AirWingGCI:SetTakeoffHot()
-        AirWingGCI:SetDespawnAfterLanding()
-        if sqGCI then
-            AirWingGCI:AddSquadron(sqGCI)
-            AirWingGCI:NewPayload("MiG-29 Fulcrum", -1, { AUFTRAG.Type.INTERCEPT, AUFTRAG.Type.GCICAP }, 90)
-        end
-        AirWingGCI:Start()
-        env.info("H3GCI: AIRWING GCI avviato")
+local AirWingGCI = AIRWING:New("RedAirWingH3GCI", "H3 Red AirWing GCI")
+if not AirWingGCI then
+    env.error("H3GCI: ERRORE - AIRWING GCI non inizializzato.")
+else
+    AirWingGCI:SetTakeoffHot()
+    AirWingGCI:SetDespawnAfterLanding()
+    if sqGCI then
+        AirWingGCI:AddSquadron(sqGCI)
+        AirWingGCI:NewPayload("RedGCIH3", -1, { AUFTRAG.Type.INTERCEPT, AUFTRAG.Type.GCICAP }, 90)
     end
+    AirWingGCI:Start()
+    env.info("H3GCI: AIRWING GCI avviato")
 end
 
 -- ==================================================
@@ -122,15 +114,17 @@ local DetectionSetGroup = SET_GROUP:New()
 DetectionSetGroup:FilterPrefixes({ "H3EW" })
 DetectionSetGroup:FilterStart()
 
-local Detection = DETECTION_AREAS:New(DetectionSetGroup, 100000)
+local Detection = DETECTION_AREAS:New(DetectionSetGroup, 60000)
 local gciLastScramble = {}
 local GCI_COOLDOWN_SEC = 300
 
-function Detection:OnAfterDetected(From, Event, To, DetectedSet)
+function Detection:OnAfterDetectedItem(From, Event, To, DetectedItem)
     if not AirWingGCI then return end
-    if not DetectedSet then return end
+    if not DetectedItem or not DetectedItem.Set then return end
     local dispatched = {}
-    DetectedSet:ForEachGroup(function(grp)
+    DetectedItem.Set:ForEachUnit(function(unit)
+        if not unit or not unit:IsAlive() then return end
+        local grp = unit:GetGroup()
         if not grp or not grp:IsAlive() then return end
         local gName = grp:GetName()
         if dispatched[gName] then return end
