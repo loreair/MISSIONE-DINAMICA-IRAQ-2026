@@ -1,7 +1,7 @@
 -- ===== MOSUL GCI SYSTEM =====
 -- Sistema CAP + GCI per difesa dello spazio aereo di Mosul
 -- CAP persistente (MiG-21Bis) + GCI reattivo (MiG-21Bis scramble)
--- Versione: 1.2 - Missione Iraq 2026
+-- Versione: 1.3 - Missione Iraq 2026
 --
 -- REQUISITI MISSION EDITOR:
 --   STATIC OBJECT (RED): "RedAirWingMosulCAP"  — piazzato a Mosul (< 5km dalla pista)
@@ -135,7 +135,7 @@ function Detection:OnAfterDetectedItem(From, Event, To, DetectedItem)
         local dist = BorderZone:GetCoordinate():Get2DDistance(threatCoord)
         if dist > 106000 then return end
         local now = timer.getTime()
-        if gciLastScramble[gName] and (now - gciLastScramble[gName]) < GciLastScramble[gName]) < GCI_COOLDOWN_SEC then return end
+        if gciLastScramble[gName] and (now - gciLastScramble[gName]) < GCI_COOLDOWN_SEC then return end
         gciLastScramble[gName] = now
         local gciAuftrag = AUFTRAG:NewINTERCEPT(grp)
         AirWingGCI:AddMission(gciAuftrag)
