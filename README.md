@@ -63,11 +63,11 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
 ```
 /scripts
   missione_iraq.lua     ← Script principale (AIRBOSS + messaggi briefing)
-  H3GCI.lua             ← GCI/CAP H-3 (MiG-29A) — MOOSE SQUADRON
-  KirkukGCI.lua         ← GCI/CAP Kirkuk (MiG-23MLD) — MOOSE SQUADRON
-  MosulGCI.lua          ← GCI/CAP Mosul (MiG-21Bis) — MOOSE SQUADRON
-  AlKutGCI.lua          ← GCI/CAP Al Kut (MiG-29A) — MOOSE SQUADRON
-  IraqAwacs.lua         ← AWACS BLU Darkstar (E-3A)
+  H3GCI.lua             ← GCI/CAP H-3 (MiG-29A) — MOOSE SQUADRON v1.4
+  KirkukGCI.lua         ← GCI/CAP Kirkuk (MiG-23MLD) — MOOSE SQUADRON v1.2
+  MosulGCI.lua          ← GCI/CAP Mosul (MiG-21Bis) — MOOSE SQUADRON v1.3
+  AlKutGCI.lua          ← GCI/CAP Al Kut (MiG-29A) — MOOSE SQUADRON v1.2
+  IraqAwacs.lua         ← AWACS BLU Darkstar (E-3A) v1.0
   IraqEvents.lua        ← Sistema eventi missione
 ```
 
@@ -93,7 +93,7 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
 
 ## 🛠️ Requisiti ME — Checklist completa
 
-### Trigger Zone (4)
+### Trigger Zone (5)
 - [ ] `H3Border` — circolare **106km** centrata su H-3
 - [ ] `KirkukBorder` — circolare **106km** centrata su Kirkuk
 - [ ] `MosulBorder` — circolare **106km** centrata su Mosul
@@ -133,9 +133,10 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
 - [x] AWACS BLUE Darkstar 270.0 AM
 - [x] Restart automatico ogni 12 ore
 - [x] Fix COHORT→SQUADRON su tutti i GCI
-- [x] Fix raggio detection 100km→60km (MiG da tutti risolto)
+- [x] Fix raggio detection 100km→60km
 - [x] Fix TACAN Washington 73X→51X
 - [x] Border zones allargate a 106km (350.000 ft trigger ME)
+- [x] Fix errore sintassi MosulGCI (cooldown) — v1.3
 - [ ] Zone di cattura dinamiche
 - [ ] CSAR con elicotteri
 
@@ -145,6 +146,7 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
 
 | Data | Versione | Modifica |
 |---|---|---|
+| 13 Apr 2026 | 1.5 | Fix MosulGCI: errore sintassi riga cooldown (doppia parentesi + variabile errata) — v1.3 |
 | 13 Apr 2026 | 1.4 | Border zones allargate 80km→106km su tutti i GCI (allineato a trigger ME 350.000 ft) |
 | 12 Apr 2026 | 1.3 | Fix COHORT→SQUADRON H3GCI, raggio detection 100→60km tutti GCI, TACAN Washington 73X→51X |
 | 11 Apr 2026 | 1.2 | Fix Roosevelt AIRBOSS, GCI Kirkuk e Mosul avviati |
