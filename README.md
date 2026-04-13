@@ -67,6 +67,7 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
   KirkukGCI.lua         ← GCI/CAP Kirkuk (MiG-23MLD) — MOOSE SQUADRON v1.2
   MosulGCI.lua          ← GCI/CAP Mosul (MiG-21Bis) — MOOSE SQUADRON v1.3
   AlKutGCI.lua          ← GCI/CAP Al Kut (MiG-29A) — MOOSE SQUADRON v1.2
+  AlKutCapture.lua      ← Zona cattura dinamica Al Kut — v1.0 ★ NUOVO
   IraqAwacs.lua         ← AWACS BLU Darkstar (E-3A) v1.0
   IraqEvents.lua        ← Sistema eventi missione
 ```
@@ -83,22 +84,25 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
 | 4 | TIME MORE 10 | DO SCRIPT FILE | `KirkukGCI.lua` |
 | 5 | TIME MORE 10 | DO SCRIPT FILE | `MosulGCI.lua` |
 | 6 | TIME MORE 10 | DO SCRIPT FILE | `AlKutGCI.lua` |
-| 7 | TIME MORE 10 | DO SCRIPT FILE | `IraqAwacs.lua` |
-| 8 | TIME MORE 10 | DO SCRIPT FILE | `IraqEvents.lua` |
-| 9 | TIME MORE 43200 | DO SCRIPT | `net.load_next_mission()` |
+| 7 | TIME MORE 10 | DO SCRIPT FILE | `AlKutCapture.lua` |
+| 8 | TIME MORE 10 | DO SCRIPT FILE | `IraqAwacs.lua` |
+| 9 | TIME MORE 10 | DO SCRIPT FILE | `IraqEvents.lua` |
+| 10 | TIME MORE 43200 | DO SCRIPT | `net.load_next_mission()` |
 
+> ⚠️ `AlKutCapture.lua` va caricato **dopo** `AlKutGCI.lua` (stesso TIME MORE 10, trigger separato).
 > ⚠️ La missione va inserita **due volte** nella playlist del server per garantire il restart corretto.
 
 ---
 
 ## 🛠️ Requisiti ME — Checklist completa
 
-### Trigger Zone (5)
+### Trigger Zone (6)
 - [ ] `H3Border` — circolare **106km** centrata su H-3
 - [ ] `KirkukBorder` — circolare **106km** centrata su Kirkuk
 - [ ] `MosulBorder` — circolare **106km** centrata su Mosul
 - [ ] `AlKutBorder` — circolare **106km** centrata su Al Kut
 - [ ] `AWACSZone` — zona orbita AWACS sul Golfo
+- [ ] `AlKutCaptureZone` — circolare **8km** centrata su Al Kut ★ NUOVO
 
 ### Static Object RED (8) — entro 5km dalla pista
 - [ ] `RedAirWingH3CAP` e `RedAirWingH3GCI` ad H-3
@@ -111,6 +115,12 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
 - [ ] `RedCAPKirkuk` e `RedGCIKirkuk` — 2× MiG-23MLD a Kirkuk
 - [ ] `RedCAPMosul` e `RedGCIMosul` — 2× MiG-21Bis a Mosul
 - [ ] `RedCAPAlKut` e `RedGCIAlKut` — 2× MiG-29A ad Al Kut
+
+### Gruppi template GROUND — Zona Cattura Al Kut ★ NUOVO
+- [ ] `RedGroundAlKut` — RED, Late Activation, **dentro** `AlKutCaptureZone`: 2× T-72B + 2× BTR-80, nessun waypoint
+- [ ] `BlueConvoyAlKut` — BLUE, Late Activation, **~30km a SUD** di Al Kut: 2× M1A2 + 2× M2 Bradley, waypoint verso Al Kut
+- [ ] `BlueAAAlKut` — BLUE, Late Activation, dentro la zona: 1× Avenger + 1× MANPAD (template, spawna lo script)
+- [ ] `RedReinforcementsAlKut` — RED, Late Activation, **~15km a NORD** di Al Kut: 2× T-72B + 2× BMP-1 (rinforzi on-demand)
 
 ### Unità EW RED (4) — attive da subito (NO Late Activation)
 - [ ] `H3EW_01` — 1L13 EWR ad H-3
@@ -135,9 +145,10 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
 - [x] Fix COHORT→SQUADRON su tutti i GCI
 - [x] Fix raggio detection 100km→60km
 - [x] Fix TACAN Washington 73X→51X
-- [x] Border zones allargate a 106km (350.000 ft trigger ME)
+- [x] Border zones allargate a 106km
 - [x] Fix errore sintassi MosulGCI (cooldown) — v1.3
-- [ ] Zone di cattura dinamiche
+- [x] Zona cattura dinamica Al Kut (AlKutCapture.lua) — v1.0
+- [ ] Zone di cattura per H-3, Kirkuk, Mosul
 - [ ] CSAR con elicotteri
 
 ---
@@ -146,8 +157,9 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
 
 | Data | Versione | Modifica |
 |---|---|---|
-| 13 Apr 2026 | 1.5 | Fix MosulGCI: errore sintassi riga cooldown (doppia parentesi + variabile errata) — v1.3 |
-| 13 Apr 2026 | 1.4 | Border zones allargate 80km→106km su tutti i GCI (allineato a trigger ME 350.000 ft) |
+| 13 Apr 2026 | 1.6 | Aggiunge AlKutCapture.lua v1.0: zona cattura dinamica Al Kut con convoglio BLUE, difesa RED, rinforzi, contrattacco e integrazione GCI |
+| 13 Apr 2026 | 1.5 | Fix MosulGCI: errore sintassi riga cooldown — v1.3 |
+| 13 Apr 2026 | 1.4 | Border zones allargate 80km→106km su tutti i GCI |
 | 12 Apr 2026 | 1.3 | Fix COHORT→SQUADRON H3GCI, raggio detection 100→60km tutti GCI, TACAN Washington 73X→51X |
 | 11 Apr 2026 | 1.2 | Fix Roosevelt AIRBOSS, GCI Kirkuk e Mosul avviati |
 | 11 Apr 2026 | 1.1 | Setup iniziale GCI/CAP sistema 4 basi |
