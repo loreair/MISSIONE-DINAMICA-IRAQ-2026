@@ -21,7 +21,7 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
 
 ### AWACS
 | Callsign | Frequenza | TACAN | Orbita |
-|---|---|---|
+|---|---|---|---|
 | **Darkstar** (E-3A) | 270.0 AM | 1X DAR | Golfo Persico / Kuwait |
 
 ---
@@ -63,13 +63,13 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
 ```
 /scripts
   missione_iraq.lua     ← Script principale (AIRBOSS + messaggi briefing)
+  IraqEvents.lua        ← Sistema eventi missione
+  IraqAwacs.lua         ← AWACS BLU Darkstar (E-3A) v1.0
+  AlKutGCI.lua          ← GCI/CAP Al Kut (MiG-29A) — MOOSE SQUADRON v1.2
+  AlKutCapture.lua      ← Zona cattura dinamica Al Kut — v1.0
   H3GCI.lua             ← GCI/CAP H-3 (MiG-29A) — MOOSE SQUADRON v1.4
   KirkukGCI.lua         ← GCI/CAP Kirkuk (MiG-23MLD) — MOOSE SQUADRON v1.2
   MosulGCI.lua          ← GCI/CAP Mosul (MiG-21Bis) — MOOSE SQUADRON v1.3
-  AlKutGCI.lua          ← GCI/CAP Al Kut (MiG-29A) — MOOSE SQUADRON v1.2
-  AlKutCapture.lua      ← Zona cattura dinamica Al Kut — v1.0
-  IraqAwacs.lua         ← AWACS BLU Darkstar (E-3A) v1.0
-  IraqEvents.lua        ← Sistema eventi missione
 ```
 
 ---
@@ -79,18 +79,18 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
 | N° | Condizione | Azione | File |
 |---|---|---|---|
 | 1 | MISSION START | DO SCRIPT FILE | `Moose_.lua` |
-| 2 | TIME MORE 5 | DO SCRIPT FILE | `missione_iraq.lua` |
-| 3 | TIME MORE 7 | DO SCRIPT FILE | `AlKutGCI.lua` |
-| 4 | TIME MORE 8 | DO SCRIPT FILE | `AlKutCapture.lua` |
-| 5 | TIME MORE 9 | DO SCRIPT FILE | `H3GCI.lua` |
-| 6 | TIME MORE 11 | DO SCRIPT FILE | `KirkukGCI.lua` |
-| 7 | TIME MORE 13 | DO SCRIPT FILE | `MosulGCI.lua` |
-| 8 | TIME MORE 15 | DO SCRIPT FILE | `IraqAwacs.lua` |
-| 9 | TIME MORE 15 | DO SCRIPT FILE | `IraqEvents.lua` |
+| 2 | TIME MORE 3 | DO SCRIPT FILE | `missione_iraq.lua` |
+| 3 | TIME MORE 4 | DO SCRIPT FILE | `IraqEvents.lua` |
+| 4 | TIME MORE 6 | DO SCRIPT FILE | `IraqAwacs.lua` |
+| 5 | TIME MORE 7 | DO SCRIPT FILE | `AlKutGCI.lua` |
+| 6 | TIME MORE 8 | DO SCRIPT FILE | `AlKutCapture.lua` |
+| 7 | TIME MORE 9 | DO SCRIPT FILE | `H3GCI.lua` |
+| 8 | TIME MORE 11 | DO SCRIPT FILE | `KirkukGCI.lua` |
+| 9 | TIME MORE 13 | DO SCRIPT FILE | `MosulGCI.lua` |
 | 10 | TIME MORE 43200 | DO SCRIPT | `net.load_next_mission()` |
 
 > ⚠️ `AlKutCapture.lua` (TIME MORE 8) va **sempre dopo** `AlKutGCI.lua` (TIME MORE 7) — dipende dalle sue variabili globali.
-> ⚠️ `IraqAwacs.lua` e `IraqEvents.lua` non hanno un TIME specificato dall'utente — usano TIME MORE 15 come stima; aggiornare se diverso.
+> ⚠️ Il TIME di `missione_iraq.lua` non è stato confermato — aggiornare se diverso da 3.
 > ⚠️ La missione va inserita **due volte** nella playlist del server per garantire il restart corretto.
 
 ---
@@ -158,6 +158,7 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
 
 | Data | Versione | Modifica |
 |---|---|---|
+| 13 Apr 2026 | 1.8 | Corregge TIME reali: IraqEvents=4, IraqAwacs=6; riordina tabella trigger e struttura script |
 | 13 Apr 2026 | 1.7 | Aggiorna tabella trigger ME con TIME reali: AlKutGCI=7, AlKutCapture=8, H3=9, Kirkuk=11, Mosul=13 |
 | 13 Apr 2026 | 1.6 | Aggiunge AlKutCapture.lua v1.0: zona cattura dinamica Al Kut |
 | 13 Apr 2026 | 1.5 | Fix MosulGCI: errore sintassi riga cooldown — v1.3 |
