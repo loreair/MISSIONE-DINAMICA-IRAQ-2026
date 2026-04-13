@@ -21,7 +21,7 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
 
 ### AWACS
 | Callsign | Frequenza | TACAN | Orbita |
-|---|---|---|---|
+|---|---|---|
 | **Darkstar** (E-3A) | 270.0 AM | 1X DAR | Golfo Persico / Kuwait |
 
 ---
@@ -67,7 +67,7 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
   KirkukGCI.lua         ← GCI/CAP Kirkuk (MiG-23MLD) — MOOSE SQUADRON v1.2
   MosulGCI.lua          ← GCI/CAP Mosul (MiG-21Bis) — MOOSE SQUADRON v1.3
   AlKutGCI.lua          ← GCI/CAP Al Kut (MiG-29A) — MOOSE SQUADRON v1.2
-  AlKutCapture.lua      ← Zona cattura dinamica Al Kut — v1.0 ★ NUOVO
+  AlKutCapture.lua      ← Zona cattura dinamica Al Kut — v1.0
   IraqAwacs.lua         ← AWACS BLU Darkstar (E-3A) v1.0
   IraqEvents.lua        ← Sistema eventi missione
 ```
@@ -80,16 +80,17 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
 |---|---|---|---|
 | 1 | MISSION START | DO SCRIPT FILE | `Moose_.lua` |
 | 2 | TIME MORE 5 | DO SCRIPT FILE | `missione_iraq.lua` |
-| 3 | TIME MORE 10 | DO SCRIPT FILE | `H3GCI.lua` |
-| 4 | TIME MORE 10 | DO SCRIPT FILE | `KirkukGCI.lua` |
-| 5 | TIME MORE 10 | DO SCRIPT FILE | `MosulGCI.lua` |
-| 6 | TIME MORE 10 | DO SCRIPT FILE | `AlKutGCI.lua` |
-| 7 | TIME MORE 10 | DO SCRIPT FILE | `AlKutCapture.lua` |
-| 8 | TIME MORE 10 | DO SCRIPT FILE | `IraqAwacs.lua` |
-| 9 | TIME MORE 10 | DO SCRIPT FILE | `IraqEvents.lua` |
+| 3 | TIME MORE 7 | DO SCRIPT FILE | `AlKutGCI.lua` |
+| 4 | TIME MORE 8 | DO SCRIPT FILE | `AlKutCapture.lua` |
+| 5 | TIME MORE 9 | DO SCRIPT FILE | `H3GCI.lua` |
+| 6 | TIME MORE 11 | DO SCRIPT FILE | `KirkukGCI.lua` |
+| 7 | TIME MORE 13 | DO SCRIPT FILE | `MosulGCI.lua` |
+| 8 | TIME MORE 15 | DO SCRIPT FILE | `IraqAwacs.lua` |
+| 9 | TIME MORE 15 | DO SCRIPT FILE | `IraqEvents.lua` |
 | 10 | TIME MORE 43200 | DO SCRIPT | `net.load_next_mission()` |
 
-> ⚠️ `AlKutCapture.lua` va caricato **dopo** `AlKutGCI.lua` (stesso TIME MORE 10, trigger separato).
+> ⚠️ `AlKutCapture.lua` (TIME MORE 8) va **sempre dopo** `AlKutGCI.lua` (TIME MORE 7) — dipende dalle sue variabili globali.
+> ⚠️ `IraqAwacs.lua` e `IraqEvents.lua` non hanno un TIME specificato dall'utente — usano TIME MORE 15 come stima; aggiornare se diverso.
 > ⚠️ La missione va inserita **due volte** nella playlist del server per garantire il restart corretto.
 
 ---
@@ -102,7 +103,7 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
 - [ ] `MosulBorder` — circolare **106km** centrata su Mosul
 - [ ] `AlKutBorder` — circolare **106km** centrata su Al Kut
 - [ ] `AWACSZone` — zona orbita AWACS sul Golfo
-- [ ] `AlKutCaptureZone` — circolare **8km** centrata su Al Kut ★ NUOVO
+- [ ] `AlKutCaptureZone` — circolare **8km** centrata su Al Kut
 
 ### Static Object RED (8) — entro 5km dalla pista
 - [ ] `RedAirWingH3CAP` e `RedAirWingH3GCI` ad H-3
@@ -116,11 +117,11 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
 - [ ] `RedCAPMosul` e `RedGCIMosul` — 2× MiG-21Bis a Mosul
 - [ ] `RedCAPAlKut` e `RedGCIAlKut` — 2× MiG-29A ad Al Kut
 
-### Gruppi template GROUND — Zona Cattura Al Kut ★ NUOVO
+### Gruppi template GROUND — Zona Cattura Al Kut
 - [ ] `RedGroundAlKut` — RED, Late Activation, **dentro** `AlKutCaptureZone`: 2× T-72B + 2× BTR-80, nessun waypoint
 - [ ] `BlueConvoyAlKut` — BLUE, Late Activation, **~30km a SUD** di Al Kut: 2× M1A2 + 2× M2 Bradley, waypoint verso Al Kut
-- [ ] `BlueAAAlKut` — BLUE, Late Activation, dentro la zona: 1× Avenger + 1× MANPAD (template, spawna lo script)
-- [ ] `RedReinforcementsAlKut` — RED, Late Activation, **~15km a NORD** di Al Kut: 2× T-72B + 2× BMP-1 (rinforzi on-demand)
+- [ ] `BlueAAAlKut` — BLUE, Late Activation, dentro la zona: 1× Avenger + 1× MANPAD (template, spawna lo script dopo cattura)
+- [ ] `RedReinforcementsAlKut` — RED, Late Activation, **~15km a NORD** di Al Kut: 2× T-72B + 2× BMP-1
 
 ### Unità EW RED (4) — attive da subito (NO Late Activation)
 - [ ] `H3EW_01` — 1L13 EWR ad H-3
@@ -157,7 +158,8 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
 
 | Data | Versione | Modifica |
 |---|---|---|
-| 13 Apr 2026 | 1.6 | Aggiunge AlKutCapture.lua v1.0: zona cattura dinamica Al Kut con convoglio BLUE, difesa RED, rinforzi, contrattacco e integrazione GCI |
+| 13 Apr 2026 | 1.7 | Aggiorna tabella trigger ME con TIME reali: AlKutGCI=7, AlKutCapture=8, H3=9, Kirkuk=11, Mosul=13 |
+| 13 Apr 2026 | 1.6 | Aggiunge AlKutCapture.lua v1.0: zona cattura dinamica Al Kut |
 | 13 Apr 2026 | 1.5 | Fix MosulGCI: errore sintassi riga cooldown — v1.3 |
 | 13 Apr 2026 | 1.4 | Border zones allargate 80km→106km su tutti i GCI |
 | 12 Apr 2026 | 1.3 | Fix COHORT→SQUADRON H3GCI, raggio detection 100→60km tutti GCI, TACAN Washington 73X→51X |
