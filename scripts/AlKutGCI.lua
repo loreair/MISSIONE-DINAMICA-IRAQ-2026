@@ -1,7 +1,7 @@
 -- ===== AL KUT GCI SYSTEM =====
 -- Sistema CAP + GCI per difesa dello spazio aereo di Al Kut
 -- CAP persistente (MiG-29) + GCI reattivo (MiG-29 scramble)
--- Versione: 1.1 - Missione Iraq 2026
+-- Versione: 1.2 - Missione Iraq 2026
 --
 -- REQUISITI MISSION EDITOR:
 --   STATIC OBJECT (RED): "RedAirWingAlKutCAP"  — piazzato ad Al Kut (< 5km dalla pista)
@@ -9,7 +9,7 @@
 --   GRUPPO template (RED, Late Activation): "RedCAPAlKut"  — 2x MiG-29A, parcheggiato ad AL KUT
 --   GRUPPO template (RED, Late Activation): "RedGCIAlKut"  — 2x MiG-29A, parcheggiato ad AL KUT
 --   Unità EW: qualsiasi unità con prefisso "AlKutEW"
---   Border zone: trigger zone "AlKutBorder" (circolare 80km centrata su Al Kut)
+--   Border zone: trigger zone "AlKutBorder" (circolare 106km centrata su Al Kut)
 
 -- ==================================================
 -- 1. CONFIGURAZIONE ZONA CONFINE
@@ -19,12 +19,12 @@ local BorderZone = nil
 local triggerZone = trigger.misc.getZone("AlKutBorder")
 if triggerZone then
     local zoneVec2 = { x = triggerZone.point.x, y = triggerZone.point.z }
-    BorderZone = ZONE_RADIUS:New("AlKutBorderZone", zoneVec2, triggerZone.radius or 80000)
+    BorderZone = ZONE_RADIUS:New("AlKutBorderZone", zoneVec2, triggerZone.radius or 106000)
     env.info("AlKutGCI: Border zone configurata da trigger zone 'AlKutBorder'")
 else
-    env.warning("AlKutGCI: 'AlKutBorder' non trovato, uso zona default (80km da Al Kut)")
+    env.warning("AlKutGCI: 'AlKutBorder' non trovato, uso zona default (106km da Al Kut)")
     local alKutVec2 = AIRBASE:FindByName("Al Kut Airfield"):GetVec2()
-    BorderZone = ZONE_RADIUS:New("AlKutBorderDefault", alKutVec2, 80000)
+    BorderZone = ZONE_RADIUS:New("AlKutBorderDefault", alKutVec2, 106000)
 end
 
 local capCenter = BorderZone:GetCoordinate()
@@ -108,7 +108,7 @@ else
 end
 
 -- ==================================================
--- 4. DETECTION + GCI REATTIVO (FIX: raggio 100km → 60km)
+-- 4. DETECTION + GCI REATTIVO
 -- ==================================================
 local DetectionSetGroup = SET_GROUP:New()
 DetectionSetGroup:FilterPrefixes({ "AlKutEW" })
@@ -133,7 +133,7 @@ function Detection:OnAfterDetectedItem(From, Event, To, DetectedItem)
         local threatCoord = grp:GetCoordinate()
         if not threatCoord then return end
         local dist = BorderZone:GetCoordinate():Get2DDistance(threatCoord)
-        if dist > 80000 then return end
+        if dist > 106000 then return end
         local now = timer.getTime()
         if gciLastScramble[gName] and (now - gciLastScramble[gName]) < GCI_COOLDOWN_SEC then return end
         gciLastScramble[gName] = now

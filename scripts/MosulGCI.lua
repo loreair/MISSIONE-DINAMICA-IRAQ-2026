@@ -1,7 +1,7 @@
 -- ===== MOSUL GCI SYSTEM =====
 -- Sistema CAP + GCI per difesa dello spazio aereo di Mosul
 -- CAP persistente (MiG-21Bis) + GCI reattivo (MiG-21Bis scramble)
--- Versione: 1.1 - Missione Iraq 2026
+-- Versione: 1.2 - Missione Iraq 2026
 --
 -- REQUISITI MISSION EDITOR:
 --   STATIC OBJECT (RED): "RedAirWingMosulCAP"  — piazzato a Mosul (< 5km dalla pista)
@@ -9,7 +9,7 @@
 --   GRUPPO template (RED, Late Activation): "RedCAPMosul"  — 2x MiG-21Bis, parcheggiato a Mosul
 --   GRUPPO template (RED, Late Activation): "RedGCIMosul"  — 2x MiG-21Bis, parcheggiato a Mosul
 --   Unità EW: "MosulEW_01" (SA-10 SR o 1L13 EWR)
---   Border zone: trigger zone "MosulBorder" (circolare 80km centrata su Mosul)
+--   Border zone: trigger zone "MosulBorder" (circolare 106km centrata su Mosul)
 
 -- ==================================================
 -- 1. CONFIGURAZIONE ZONA CONFINE
@@ -19,12 +19,12 @@ local BorderZone = nil
 local triggerZone = trigger.misc.getZone("MosulBorder")
 if triggerZone then
     local zoneVec2 = { x = triggerZone.point.x, y = triggerZone.point.z }
-    BorderZone = ZONE_RADIUS:New("MosulBorderZone", zoneVec2, triggerZone.radius or 80000)
+    BorderZone = ZONE_RADIUS:New("MosulBorderZone", zoneVec2, triggerZone.radius or 106000)
     env.info("MosulGCI: Border zone configurata da trigger zone 'MosulBorder'")
 else
-    env.warning("MosulGCI: 'MosulBorder' non trovato, uso zona default (80km da Mosul)")
+    env.warning("MosulGCI: 'MosulBorder' non trovato, uso zona default (106km da Mosul)")
     local mosulVec2 = AIRBASE:FindByName(AIRBASE.Iraq.Mosul_International_Airport):GetVec2()
-    BorderZone = ZONE_RADIUS:New("MosulBorderDefault", mosulVec2, 80000)
+    BorderZone = ZONE_RADIUS:New("MosulBorderDefault", mosulVec2, 106000)
 end
 
 local capCenter = BorderZone:GetCoordinate()
@@ -108,7 +108,7 @@ else
 end
 
 -- ==================================================
--- 4. DETECTION + GCI REATTIVO (FIX: raggio 100km → 60km)
+-- 4. DETECTION + GCI REATTIVO
 -- ==================================================
 local DetectionSetGroup = SET_GROUP:New()
 DetectionSetGroup:FilterPrefixes({ "MosulEW" })
@@ -133,9 +133,9 @@ function Detection:OnAfterDetectedItem(From, Event, To, DetectedItem)
         local threatCoord = grp:GetCoordinate()
         if not threatCoord then return end
         local dist = BorderZone:GetCoordinate():Get2DDistance(threatCoord)
-        if dist > 80000 then return end
+        if dist > 106000 then return end
         local now = timer.getTime()
-        if gciLastScramble[gName] and (now - gciLastScramble[gName]) < GCI_COOLDOWN_SEC then return end
+        if gciLastScramble[gName] and (now - gciLastScramble[gName]) < GciLastScramble[gName]) < GCI_COOLDOWN_SEC then return end
         gciLastScramble[gName] = now
         local gciAuftrag = AUFTRAG:NewINTERCEPT(grp)
         AirWingGCI:AddMission(gciAuftrag)

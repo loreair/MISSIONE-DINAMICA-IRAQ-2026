@@ -94,10 +94,10 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
 ## 🛠️ Requisiti ME — Checklist completa
 
 ### Trigger Zone (4)
-- [ ] `H3Border` — circolare 80km centrata su H-3
-- [ ] `KirkukBorder` — circolare 80km centrata su Kirkuk
-- [ ] `MosulBorder` — circolare 80km centrata su Mosul
-- [ ] `AlKutBorder` — circolare 80km centrata su Al Kut
+- [ ] `H3Border` — circolare **106km** centrata su H-3
+- [ ] `KirkukBorder` — circolare **106km** centrata su Kirkuk
+- [ ] `MosulBorder` — circolare **106km** centrata su Mosul
+- [ ] `AlKutBorder` — circolare **106km** centrata su Al Kut
 - [ ] `AWACSZone` — zona orbita AWACS sul Golfo
 
 ### Static Object RED (8) — entro 5km dalla pista
@@ -135,6 +135,7 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
 - [x] Fix COHORT→SQUADRON su tutti i GCI
 - [x] Fix raggio detection 100km→60km (MiG da tutti risolto)
 - [x] Fix TACAN Washington 73X→51X
+- [x] Border zones allargate a 106km (350.000 ft trigger ME)
 - [ ] Zone di cattura dinamiche
 - [ ] CSAR con elicotteri
 
@@ -144,6 +145,7 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
 
 | Data | Versione | Modifica |
 |---|---|---|
+| 13 Apr 2026 | 1.4 | Border zones allargate 80km→106km su tutti i GCI (allineato a trigger ME 350.000 ft) |
 | 12 Apr 2026 | 1.3 | Fix COHORT→SQUADRON H3GCI, raggio detection 100→60km tutti GCI, TACAN Washington 73X→51X |
 | 11 Apr 2026 | 1.2 | Fix Roosevelt AIRBOSS, GCI Kirkuk e Mosul avviati |
 | 11 Apr 2026 | 1.1 | Setup iniziale GCI/CAP sistema 4 basi |

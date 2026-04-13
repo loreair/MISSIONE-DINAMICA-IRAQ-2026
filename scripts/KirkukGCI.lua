@@ -1,7 +1,7 @@
 -- ===== KIRKUK GCI SYSTEM =====
 -- Sistema CAP + GCI per difesa dello spazio aereo di Kirkuk
 -- CAP persistente (MiG-23MLD) + GCI reattivo (MiG-23MLD scramble)
--- Versione: 1.1 - Missione Iraq 2026
+-- Versione: 1.2 - Missione Iraq 2026
 --
 -- REQUISITI MISSION EDITOR:
 --   STATIC OBJECT (RED): "RedAirWingKirkukCAP"  — piazzato a Kirkuk (< 5km dalla pista)
@@ -9,7 +9,7 @@
 --   GRUPPO template (RED, Late Activation): "RedCAPKirkuk"  — 2x MiG-23MLD, parcheggiato a Kirkuk
 --   GRUPPO template (RED, Late Activation): "RedGCIKirkuk"  — 2x MiG-23MLD, parcheggiato a Kirkuk
 --   Unità EW: "KirkukEW_01" (SA-10 SR o 1L13 EWR)
---   Border zone: trigger zone "KirkukBorder" (circolare 80km centrata su Kirkuk)
+--   Border zone: trigger zone "KirkukBorder" (circolare 106km centrata su Kirkuk)
 
 -- ==================================================
 -- 1. CONFIGURAZIONE ZONA CONFINE
@@ -19,12 +19,12 @@ local BorderZone = nil
 local triggerZone = trigger.misc.getZone("KirkukBorder")
 if triggerZone then
     local zoneVec2 = { x = triggerZone.point.x, y = triggerZone.point.z }
-    BorderZone = ZONE_RADIUS:New("KirkukBorderZone", zoneVec2, triggerZone.radius or 80000)
+    BorderZone = ZONE_RADIUS:New("KirkukBorderZone", zoneVec2, triggerZone.radius or 106000)
     env.info("KirkukGCI: Border zone configurata da trigger zone 'KirkukBorder'")
 else
-    env.warning("KirkukGCI: 'KirkukBorder' non trovato, uso zona default (80km da Kirkuk)")
+    env.warning("KirkukGCI: 'KirkukBorder' non trovato, uso zona default (106km da Kirkuk)")
     local kirkukVec2 = AIRBASE:FindByName(AIRBASE.Iraq.Kirkuk_Air_Base):GetVec2()
-    BorderZone = ZONE_RADIUS:New("KirkukBorderDefault", kirkukVec2, 80000)
+    BorderZone = ZONE_RADIUS:New("KirkukBorderDefault", kirkukVec2, 106000)
 end
 
 local capCenter = BorderZone:GetCoordinate()
@@ -108,7 +108,7 @@ else
 end
 
 -- ==================================================
--- 4. DETECTION + GCI REATTIVO (FIX: raggio 100km → 60km)
+-- 4. DETECTION + GCI REATTIVO
 -- ==================================================
 local DetectionSetGroup = SET_GROUP:New()
 DetectionSetGroup:FilterPrefixes({ "KirkukEW" })
@@ -133,7 +133,7 @@ function Detection:OnAfterDetectedItem(From, Event, To, DetectedItem)
         local threatCoord = grp:GetCoordinate()
         if not threatCoord then return end
         local dist = BorderZone:GetCoordinate():Get2DDistance(threatCoord)
-        if dist > 80000 then return end
+        if dist > 106000 then return end
         local now = timer.getTime()
         if gciLastScramble[gName] and (now - gciLastScramble[gName]) < GCI_COOLDOWN_SEC then return end
         gciLastScramble[gName] = now

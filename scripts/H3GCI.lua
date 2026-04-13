@@ -1,7 +1,7 @@
 -- ===== H-3 MAIN GCI SYSTEM =====
 -- Sistema CAP + GCI per difesa dello spazio aereo di H-3
 -- CAP persistente (MiG-29A) + GCI reattivo (MiG-29A scramble)
--- Versione: 1.3 - Missione Iraq 2026
+-- Versione: 1.4 - Missione Iraq 2026
 --
 -- REQUISITI MISSION EDITOR:
 --   STATIC OBJECT (RED): "RedAirWingH3CAP"  — piazzato a H-3 (< 5km dalla pista)
@@ -9,7 +9,7 @@
 --   GRUPPO template (RED, Late Activation): "RedCAPH3"  — 2x MiG-29A, parcheggiato a H-3
 --   GRUPPO template (RED, Late Activation): "RedGCIH3"  — 2x MiG-29A, parcheggiato a H-3
 --   Unità EW: "H3EW_01" (SA-10 SR o 1L13 EWR)
---   Border zone: trigger zone "H3Border" (circolare 80km centrata su H-3)
+--   Border zone: trigger zone "H3Border" (circolare 106km centrata su H-3)
 
 -- ==================================================
 -- 1. CONFIGURAZIONE ZONA CONFINE
@@ -19,12 +19,12 @@ local BorderZone = nil
 local triggerZone = trigger.misc.getZone("H3Border")
 if triggerZone then
     local zoneVec2 = { x = triggerZone.point.x, y = triggerZone.point.z }
-    BorderZone = ZONE_RADIUS:New("H3BorderZone", zoneVec2, triggerZone.radius or 80000)
+    BorderZone = ZONE_RADIUS:New("H3BorderZone", zoneVec2, triggerZone.radius or 106000)
     env.info("H3GCI: Border zone configurata da trigger zone 'H3Border'")
 else
-    env.warning("H3GCI: 'H3Border' non trovato, uso zona default (80km da H-3)")
+    env.warning("H3GCI: 'H3Border' non trovato, uso zona default (106km da H-3)")
     local h3Vec2 = AIRBASE:FindByName(AIRBASE.Iraq.H_3_Main_Airbase):GetVec2()
-    BorderZone = ZONE_RADIUS:New("H3BorderDefault", h3Vec2, 80000)
+    BorderZone = ZONE_RADIUS:New("H3BorderDefault", h3Vec2, 106000)
 end
 
 local capCenter = BorderZone:GetCoordinate()
@@ -133,7 +133,7 @@ function Detection:OnAfterDetectedItem(From, Event, To, DetectedItem)
         local threatCoord = grp:GetCoordinate()
         if not threatCoord then return end
         local dist = BorderZone:GetCoordinate():Get2DDistance(threatCoord)
-        if dist > 80000 then return end
+        if dist > 106000 then return end
         local now = timer.getTime()
         if gciLastScramble[gName] and (now - gciLastScramble[gName]) < GCI_COOLDOWN_SEC then return end
         gciLastScramble[gName] = now
