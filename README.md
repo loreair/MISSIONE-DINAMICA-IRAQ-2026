@@ -2,6 +2,8 @@
 
 Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026-03-31**.
 
+> 📂 **File missione:** `Addestramento piloti - IRAQ - DM V2.4.miz`
+
 ---
 
 ## 🔵 Coalizione BLUE
@@ -66,7 +68,7 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
   IraqEvents.lua        ← Sistema eventi missione
   IraqAwacs.lua         ← AWACS BLU Darkstar (E-3A) v1.0
   AlKutGCI.lua          ← GCI/CAP Al Kut (MiG-29A) — MOOSE SQUADRON v1.2
-  AlKutCapture.lua      ← Zona cattura dinamica Al Kut — v1.0
+  AlKutCapture.lua      ← Zona cattura dinamica Al Kut — v1.1
   H3GCI.lua             ← GCI/CAP H-3 (MiG-29A) — MOOSE SQUADRON v1.4
   KirkukGCI.lua         ← GCI/CAP Kirkuk (MiG-23MLD) — MOOSE SQUADRON v1.2
   MosulGCI.lua          ← GCI/CAP Mosul (MiG-21Bis) — MOOSE SQUADRON v1.3
@@ -117,9 +119,9 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
 - [ ] `RedCAPAlKut` e `RedGCIAlKut` — 2× MiG-29A ad Al Kut
 
 ### Gruppi template GROUND — Zona Cattura Al Kut
-- [ ] `RedGroundAlKut` — RED, Late Activation, **dentro** `AlKutCaptureZone`: 2× T-72B + 2× BTR-80, nessun waypoint
+- [ ] `RedGroundAlKut` — RED, Late Activation, **dentro** `AlKutCaptureZone`: 2× T-72B + 2× BTR-80
 - [ ] `BlueConvoyAlKut` — BLUE, Late Activation, **~30km a SUD** di Al Kut: 2× M1A2 + 2× M2 Bradley, waypoint verso Al Kut
-- [ ] `BlueAAAlKut` — BLUE, Late Activation, dentro la zona: 1× Avenger + 1× MANPAD (template, spawna lo script dopo cattura)
+- [ ] `BlueAAAlKut` — BLUE, Late Activation, dentro la zona: 1× Avenger + 1× MANPAD
 - [ ] `RedReinforcementsAlKut` — RED, Late Activation, **~15km a NORD** di Al Kut: 2× T-72B + 2× BMP-1
 
 ### Unità EW RED (4) — attive da subito (NO Late Activation)
@@ -147,7 +149,9 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
 - [x] Fix TACAN Washington 73X→51X
 - [x] Border zones allargate a 106km
 - [x] Fix errore sintassi MosulGCI (cooldown) — v1.3
-- [x] Zona cattura dinamica Al Kut (AlKutCapture.lua) — v1.0
+- [x] Zona cattura dinamica Al Kut (AlKutCapture.lua) — v1.1
+- [x] Fix AlKutCapture: ZONE:New() + OnAfterCaptured unico handler
+- [ ] Test in-game zona cattura Al Kut (verifica cambio proprietà)
 - [ ] Zone di cattura per H-3, Kirkuk, Mosul
 - [ ] CSAR con elicotteri
 
@@ -157,7 +161,8 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
 
 | Data | Versione | Modifica |
 |---|---|---|
-| 13 Apr 2026 | 1.9 | Corregge TIME missione_iraq.lua = 5 — tabella trigger ora completa e verificata |
+| 14 Apr 2026 | 2.0 | Nome file missione: `Addestramento piloti - IRAQ - DM V2.4.miz`; fix AlKutCapture v1.1 |
+| 13 Apr 2026 | 1.9 | Corregge TIME missione_iraq.lua = 5 — tabella trigger completa e verificata |
 | 13 Apr 2026 | 1.8 | Corregge TIME reali: IraqEvents=4, IraqAwacs=6 |
 | 13 Apr 2026 | 1.7 | Aggiorna tabella trigger ME con TIME reali: AlKutGCI=7, AlKutCapture=8, H3=9, Kirkuk=11, Mosul=13 |
 | 13 Apr 2026 | 1.6 | Aggiunge AlKutCapture.lua v1.0: zona cattura dinamica Al Kut |
