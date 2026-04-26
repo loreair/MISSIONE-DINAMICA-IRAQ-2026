@@ -2,7 +2,8 @@
 
 Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026-03-31**.
 
-> 📂 **File missione:** `Addestramento piloti - IRAQ - DM V2.4.miz`
+> 📂 **File missione:** `LOREAIR IRAQ - DM V2.4.miz`  
+> Il file è distribuito nel repo come `.miz` — pronto all'uso in DCS World.
 
 ---
 
@@ -151,6 +152,7 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
 - [x] Fix errore sintassi MosulGCI (cooldown) — v1.3
 - [x] Zona cattura dinamica Al Kut (AlKutCapture.lua) — v1.1
 - [x] Fix AlKutCapture: ZONE:New() + OnAfterCaptured unico handler
+- [x] File missione caricato: `LOREAIR IRAQ - DM V2.4.miz`
 - [ ] Test in-game zona cattura Al Kut (verifica cambio proprietà)
 - [ ] Zone di cattura per H-3, Kirkuk, Mosul
 - [ ] CSAR con elicotteri
@@ -161,14 +163,15 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
 
 | Data | Versione | Modifica |
 |---|---|---|
-| 14 Apr 2026 | 2.0 | Nome file missione: `Addestramento piloti - IRAQ - DM V2.4.miz`; fix AlKutCapture v1.1 |
-| 13 Apr 2026 | 1.9 | Corregge TIME missione_iraq.lua = 5 — tabella trigger completa e verificata |
+| 26 Apr 2026 | 2.1 | Corregge nome file missione: `LOREAIR IRAQ - DM V2.4.miz` |
+| 14 Apr 2026 | 2.0 | Aggiunge file missione e fix AlKutCapture v1.1 |
+| 13 Apr 2026 | 1.9 | Corregge TIME missione_iraq.lua = 5 |
 | 13 Apr 2026 | 1.8 | Corregge TIME reali: IraqEvents=4, IraqAwacs=6 |
-| 13 Apr 2026 | 1.7 | Aggiorna tabella trigger ME con TIME reali: AlKutGCI=7, AlKutCapture=8, H3=9, Kirkuk=11, Mosul=13 |
-| 13 Apr 2026 | 1.6 | Aggiunge AlKutCapture.lua v1.0: zona cattura dinamica Al Kut |
+| 13 Apr 2026 | 1.7 | Aggiorna tabella trigger ME con TIME reali |
+| 13 Apr 2026 | 1.6 | Aggiunge AlKutCapture.lua v1.0 |
 | 13 Apr 2026 | 1.5 | Fix MosulGCI: errore sintassi riga cooldown — v1.3 |
 | 13 Apr 2026 | 1.4 | Border zones allargate 80km→106km su tutti i GCI |
-| 12 Apr 2026 | 1.3 | Fix COHORT→SQUADRON H3GCI, raggio detection 100→60km tutti GCI, TACAN Washington 73X→51X |
+| 12 Apr 2026 | 1.3 | Fix COHORT→SQUADRON H3GCI, detection 100→60km, TACAN Washington 73X→51X |
 | 11 Apr 2026 | 1.2 | Fix Roosevelt AIRBOSS, GCI Kirkuk e Mosul avviati |
 | 11 Apr 2026 | 1.1 | Setup iniziale GCI/CAP sistema 4 basi |
 
