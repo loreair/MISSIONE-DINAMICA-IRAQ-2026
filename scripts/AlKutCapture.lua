@@ -1,14 +1,14 @@
 -- ===================================================================
 -- AL KUT CAPTURE ZONE SYSTEM
 -- Zona di cattura dinamica per Al Kut Airfield
--- Versione: 1.2 — Missione Iraq 2026
+-- Versione: 1.3 — Missione Iraq 2026
 -- Dipende da: AlKutGCI.lua (deve essere caricato prima)
 -- ===================================================================
 --
 -- REQUISITI MISSION EDITOR:
---   TRIGGER ZONE:  "AlKutCaptureZone"   — circolare 8km centrata su Al Kut
+--   TRIGGER ZONE:  "AlKutCaptureZone"   — circolare 120km centrata su Al Kut
 --   GRUPPO RED  (Late Activation): "RedGroundAlKut"   — 2x T-72B + 2x BTR-80, FERMI dentro la zona
---   GRUPPO BLUE (Late Activation): "BlueConvoyAlKut"  — 2x M1A2 + 2x M2 Bradley, ~30km a SUD, waypoint verso Al Kut
+--   GRUPPO BLUE (Late Activation): "BlueConvoyAlKut"  — 2x M1A2 + 2x M2 Bradley, ~30km a NORD-OVEST, waypoint verso Al Kut
 --   GRUPPO BLUE (Late Activation): "BlueAAAlKut"      — 1x Avenger + 1x MANPAD, dentro la zona (template per spawn post-cattura)
 --   GRUPPO RED  (Late Activation): "RedReinforcementsAlKut" — 2x T-72B + 2x BMP-1, ~15km a NORD (rinforzi RED)
 --
@@ -45,7 +45,7 @@ end
 
 -- Punto centrale per i marker F10 (API DCS nativa)
 local captureZoneTrigger = trigger.misc.getZone(ALKUT_ZONE_NAME)
-env.info("AlKutCapture: Zona '" .. ALKUT_ZONE_NAME .. "' configurata con ZONE:New()")
+env.info("AlKutCapture: Zona '" .. ALKUT_ZONE_NAME .. "' configurata con ZONE:New() — raggio 120km")
 
 -- ==================================================
 -- 2. FUNZIONE SPAWN PRIMO CONTATTO
@@ -67,12 +67,12 @@ local function SpawnFirstContact()
         env.error("AlKutCapture: ERRORE - Gruppo template 'RedGroundAlKut' non trovato nel ME!")
     end
 
-    -- Spawn convoglio BLUE
+    -- Spawn convoglio BLUE (provenienza: nord-ovest)
     local spawnBlueConvoy = SPAWN:New("BlueConvoyAlKut")
     if spawnBlueConvoy then
         spawnBlueConvoy:Spawn()
-        env.info("AlKutCapture: Convoglio BLUE avviato (BlueConvoyAlKut)")
-        MESSAGE:New("\xF0\x9F\x93\xA1 INTEL: Rilevato convoglio corazzato BLUE in avanzata verso Al Kut", 25, "INTEL"):ToAll()
+        env.info("AlKutCapture: Convoglio BLUE avviato da nord-ovest (BlueConvoyAlKut)")
+        MESSAGE:New("\xF0\x9F\x93\xA1 INTEL: Rilevato convoglio corazzato BLUE in avanzata da nord-ovest verso Al Kut", 25, "INTEL"):ToAll()
     else
         env.warning("AlKutCapture: ATTENZIONE - Gruppo 'BlueConvoyAlKut' non trovato. Convoglio non avviato.")
     end
@@ -236,9 +236,11 @@ if captureZoneTrigger then
 end
 
 env.info("============================================")
-env.info("=== AL KUT CAPTURE ZONE SYSTEM v1.2 ATTIVO ===")
+env.info("=== AL KUT CAPTURE ZONE SYSTEM v1.3 ATTIVO ===")
 env.info("============================================")
 env.info("Zona: " .. ALKUT_ZONE_NAME)
+env.info("v1.3: raggio zona aumentato a 120km")
+env.info("v1.3: BlueConvoyAlKut provenienza aggiornata a nord-ovest")
 env.info("Fix v1.2: spawn RED + convoy solo al primo ingresso aereo BLUE")
 env.info("Monitor: SCHEDULER polling ogni 15s su AlKutCaptureZone")
 env.info("Fix v1.1: ZONE:New() — polling ZONE_CAPTURE_COALITION attivo")
@@ -248,4 +250,4 @@ env.info("Trigger spawn: primo aereo BLUE in zona")
 env.info("Contrattacco RED post-cattura: +" .. COUNTERATTACK_DELAY .. "s")
 env.info("============================================")
 
-MESSAGE:New("AL KUT: sistema zona cattura v1.2 attivo — attesa contatto BLUE", 20, "SISTEMA"):ToAll()
+MESSAGE:New("AL KUT: sistema zona cattura v1.3 attivo — attesa contatto BLUE", 20, "SISTEMA"):ToAll()
