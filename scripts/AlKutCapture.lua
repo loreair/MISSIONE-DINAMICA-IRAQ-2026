@@ -1,7 +1,7 @@
 -- ===================================================================
 -- AL KUT CAPTURE ZONE SYSTEM
 -- Zona di cattura dinamica per Al Kut Airfield
--- Versione: 1.1 — Missione Iraq 2026
+-- Versione: 1.2 — Missione Iraq 2026
 -- Dipende da: AlKutGCI.lua (deve essere caricato prima)
 -- ===================================================================
 --
@@ -11,6 +11,10 @@
 --   GRUPPO BLUE (Late Activation): "BlueConvoyAlKut"  — 2x M1A2 + 2x M2 Bradley, ~30km a SUD, waypoint verso Al Kut
 --   GRUPPO BLUE (Late Activation): "BlueAAAlKut"      — 1x Avenger + 1x MANPAD, dentro la zona (template per spawn post-cattura)
 --   GRUPPO RED  (Late Activation): "RedReinforcementsAlKut" — 2x T-72B + 2x BMP-1, ~15km a NORD (rinforzi RED)
+--
+-- LOGICA SPAWN:
+--   RedGroundAlKut   — spawna SOLO quando un aereo BLUE entra per la prima volta in AlKutCaptureZone
+--   BlueConvoyAlKut  — spawna insieme alla difesa RED (trigger: stesso ingresso BLUE)
 --
 -- VARIABILI GLOBALI ESPORTATE (usate da AlKutGCI.lua):
 --   AlKutCaptured  (boolean) — true quando BLUE controlla la zona
@@ -26,10 +30,12 @@ local COUNTERATTACK_DELAY   = 600           -- secondi prima del contrattacco RE
 -- Variabile globale di stato (letta da AlKutGCI.lua)
 AlKutCaptured = false
 
+-- Flag interno: evita spawn multipli se l'aereo entra ed esce più volte
+local _alkutFirstContactDone = false
+
 -- ==================================================
 -- 1. VERIFICA ZONA
 -- FIX v1.1: ZONE:New() legge direttamente la trigger zone dal ME
--- Non servono manipolazioni manuali di coordinate
 -- ==================================================
 local AlKutZone = ZONE:New(ALKUT_ZONE_NAME)
 if not AlKutZone then
@@ -37,32 +43,70 @@ if not AlKutZone then
     return
 end
 
--- Punto centrale per i marker F10 (usando API DCS nativa)
+-- Punto centrale per i marker F10 (API DCS nativa)
 local captureZoneTrigger = trigger.misc.getZone(ALKUT_ZONE_NAME)
 env.info("AlKutCapture: Zona '" .. ALKUT_ZONE_NAME .. "' configurata con ZONE:New()")
 
 -- ==================================================
--- 2. SPAWN INIZIALE DIFESA RED
+-- 2. FUNZIONE SPAWN PRIMO CONTATTO
+-- Chiamata una sola volta quando un aereo BLUE entra nella zona.
+-- Spawna la difesa RED e avvia il convoglio BLUE.
 -- ==================================================
-local spawnRedGround = SPAWN:New("RedGroundAlKut")
-if not spawnRedGround then
-    env.error("AlKutCapture: ERRORE - Gruppo template 'RedGroundAlKut' non trovato nel ME!")
-    return
+local function SpawnFirstContact()
+    if _alkutFirstContactDone then return end
+    _alkutFirstContactDone = true
+
+    env.info("AlKutCapture: Primo contatto BLUE rilevato — attivazione scenario Al Kut")
+
+    -- Spawn difesa RED
+    local spawnRedGround = SPAWN:New("RedGroundAlKut")
+    if spawnRedGround then
+        spawnRedGround:Spawn()
+        env.info("AlKutCapture: Difesa RED Al Kut spawned (RedGroundAlKut)")
+    else
+        env.error("AlKutCapture: ERRORE - Gruppo template 'RedGroundAlKut' non trovato nel ME!")
+    end
+
+    -- Spawn convoglio BLUE
+    local spawnBlueConvoy = SPAWN:New("BlueConvoyAlKut")
+    if spawnBlueConvoy then
+        spawnBlueConvoy:Spawn()
+        env.info("AlKutCapture: Convoglio BLUE avviato (BlueConvoyAlKut)")
+        MESSAGE:New("\xF0\x9F\x93\xA1 INTEL: Rilevato convoglio corazzato BLUE in avanzata verso Al Kut", 25, "INTEL"):ToAll()
+    else
+        env.warning("AlKutCapture: ATTENZIONE - Gruppo 'BlueConvoyAlKut' non trovato. Convoglio non avviato.")
+    end
+
+    -- Messaggio combattimento imminente
+    MESSAGE:New("\xF0\x9F\x94\xB4 INTEL: Aerei BLUE rilevati su Al Kut — scenario attivato!", 30, "INTEL"):ToAll()
 end
-spawnRedGround:Spawn()
-env.info("AlKutCapture: Difesa RED Al Kut spawned (RedGroundAlKut)")
 
 -- ==================================================
--- 3. AVVIO CONVOGLIO BLUE
+-- 3. MONITOR INGRESSO AEREI BLUE nella zona
+-- Usa ZONE_RADIUS e un SET_GROUP per rilevare aerei BLUE.
+-- Polling ogni 15 secondi — leggero sul server.
 -- ==================================================
-local spawnBlueConvoy = SPAWN:New("BlueConvoyAlKut")
-if not spawnBlueConvoy then
-    env.warning("AlKutCapture: ATTENZIONE - Gruppo 'BlueConvoyAlKut' non trovato. Convoglio non avviato.")
-else
-    spawnBlueConvoy:Spawn()
-    env.info("AlKutCapture: Convoglio BLUE avviato (BlueConvoyAlKut)")
-    MESSAGE:New("\xF0\x9F\x93\xA1 INTEL: Rilevato convoglio corazzato BLUE in avanzata verso Al Kut", 25, "INTEL"):ToAll()
+local BlueAirSet = SET_GROUP:New()
+    :FilterCoalitions("blue")
+    :FilterCategoryAirplane()
+    :FilterOnce()
+
+local function CheckBlueAirInZone()
+    if _alkutFirstContactDone then return end  -- già triggerato, smetti di controllare
+
+    BlueAirSet:ForEachGroup(function(grp)
+        if _alkutFirstContactDone then return end
+        local vec3 = grp:GetVec3()
+        if vec3 and AlKutZone:IsVec3InZone(vec3) then
+            env.info("AlKutCapture: Gruppo BLUE '" .. grp:GetName() .. "' entrato in AlKutCaptureZone")
+            SpawnFirstContact()
+        end
+    end)
 end
+
+-- Avvia il polling ogni 15 secondi
+SCHEDULER:New(nil, CheckBlueAirInZone, {}, 15, 15)
+env.info("AlKutCapture: Monitor ingresso aerei BLUE attivo (polling 15s)")
 
 -- ==================================================
 -- 4. ZONA CATTURA — ZONE_CAPTURE_COALITION
@@ -192,13 +236,16 @@ if captureZoneTrigger then
 end
 
 env.info("============================================")
-env.info("=== AL KUT CAPTURE ZONE SYSTEM v1.1 ATTIVO ===")
+env.info("=== AL KUT CAPTURE ZONE SYSTEM v1.2 ATTIVO ===")
 env.info("============================================")
 env.info("Zona: " .. ALKUT_ZONE_NAME)
-env.info("Fix: ZONE:New() — polling ZONE_CAPTURE_COALITION attivo")
-env.info("Fix: OnAfterCaptured unico handler if/else")
-env.info("Stato iniziale: RED (Guarded)")
+env.info("Fix v1.2: spawn RED + convoy solo al primo ingresso aereo BLUE")
+env.info("Monitor: SCHEDULER polling ogni 15s su AlKutCaptureZone")
+env.info("Fix v1.1: ZONE:New() — polling ZONE_CAPTURE_COALITION attivo")
+env.info("Fix v1.1: OnAfterCaptured unico handler if/else")
+env.info("Stato iniziale: RED attende (nessun gruppo spawnato)")
+env.info("Trigger spawn: primo aereo BLUE in zona")
 env.info("Contrattacco RED post-cattura: +" .. COUNTERATTACK_DELAY .. "s")
 env.info("============================================")
 
-MESSAGE:New("AL KUT: sistema zona cattura v1.1 attivo", 20, "SISTEMA"):ToAll()
+MESSAGE:New("AL KUT: sistema zona cattura v1.2 attivo — attesa contatto BLUE", 20, "SISTEMA"):ToAll()
