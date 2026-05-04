@@ -2,7 +2,7 @@
 
 Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026-03-31**.
 
-> 📂 **File missione:** `LOREAIR IRAQ - DM V2.4.miz`  
+> 📂 **File missione:** `LOREAIR IRAQ - DM V2.5.miz`  
 > Il file è distribuito nel repo come `.miz` — pronto all'uso in DCS World.
 
 ---
@@ -69,7 +69,7 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
   IraqEvents.lua        ← Sistema eventi missione
   IraqAwacs.lua         ← AWACS BLU Darkstar (E-3A) v1.0
   AlKutGCI.lua          ← GCI/CAP Al Kut (MiG-29A) — MOOSE SQUADRON v1.2
-  AlKutCapture.lua      ← Zona cattura dinamica Al Kut — v1.1
+  AlKutCapture.lua      ← Zona cattura dinamica Al Kut — v1.2
   H3GCI.lua             ← GCI/CAP H-3 (MiG-29A) — MOOSE SQUADRON v1.4
   KirkukGCI.lua         ← GCI/CAP Kirkuk (MiG-23MLD) — MOOSE SQUADRON v1.2
   MosulGCI.lua          ← GCI/CAP Mosul (MiG-21Bis) — MOOSE SQUADRON v1.3
@@ -92,7 +92,7 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
 | 9 | TIME MORE 13 | DO SCRIPT FILE | `MosulGCI.lua` |
 | 10 | TIME MORE 43200 | DO SCRIPT | `net.load_next_mission()` |
 
-> ⚠️ `AlKutCapture.lua` (TIME MORE 8) va **sempre dopo** `AlKutGCI.lua` (TIME MORE 7).
+> ⚠️ `AlKutCapture.lua` (TIME MORE 8) va **sempre dopo** `AlKutGCI.lua` (TIME MORE 7).  
 > ⚠️ La missione va inserita **due volte** nella playlist del server per garantire il restart corretto.
 
 ---
@@ -152,7 +152,8 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
 - [x] Fix errore sintassi MosulGCI (cooldown) — v1.3
 - [x] Zona cattura dinamica Al Kut (AlKutCapture.lua) — v1.1
 - [x] Fix AlKutCapture: ZONE:New() + OnAfterCaptured unico handler
-- [x] File missione caricato: `LOREAIR IRAQ - DM V2.4.miz`
+- [x] Fix AlKutCapture v1.2: spawn RED + convoy solo al primo ingresso aereo BLUE
+- [x] File missione aggiornato: `LOREAIR IRAQ - DM V2.5.miz`
 - [ ] Test in-game zona cattura Al Kut (verifica cambio proprietà)
 - [ ] Zone di cattura per H-3, Kirkuk, Mosul
 - [ ] CSAR con elicotteri
@@ -163,6 +164,8 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
 
 | Data | Versione | Modifica |
 |---|---|---|
+| 04 Mag 2026 | 2.5 | Nuova versione missione `LOREAIR IRAQ - DM V2.5.miz` — fix spawn RED/convoy on-demand (AlKutCapture v1.2) |
+| 03 Mag 2026 | 2.4b | Fix AlKutCapture v1.2: spawn RedGroundAlKut + BlueConvoyAlKut solo al primo ingresso aereo BLUE in zona |
 | 26 Apr 2026 | 2.1 | Corregge nome file missione: `LOREAIR IRAQ - DM V2.4.miz` |
 | 14 Apr 2026 | 2.0 | Aggiunge file missione e fix AlKutCapture v1.1 |
 | 13 Apr 2026 | 1.9 | Corregge TIME missione_iraq.lua = 5 |
