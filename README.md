@@ -2,8 +2,10 @@
 
 Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026-03-31**.
 
-> 📂 **File missione:** `LOREAIR IRAQ - DM V2.5.miz`  
+> 📂 **File missione attuale:** `LOREAIR IRAQ - DM V2.6.miz`  
 > Il file è distribuito nel repo come `.miz` — pronto all'uso in DCS World.
+
+> 📦 Le versioni precedenti (V2.4, V2.5) sono archiviate nella cartella [`versioni-precedenti/`](./versioni-precedenti/).
 
 ---
 
@@ -153,7 +155,7 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
 - [x] Zona cattura dinamica Al Kut (AlKutCapture.lua) — v1.1
 - [x] Fix AlKutCapture: ZONE:New() + OnAfterCaptured unico handler
 - [x] Fix AlKutCapture v1.2: spawn RED + convoy solo al primo ingresso aereo BLUE
-- [x] File missione aggiornato: `LOREAIR IRAQ - DM V2.5.miz`
+- [x] File missione aggiornato: `LOREAIR IRAQ - DM V2.6.miz`
 - [ ] Test in-game zona cattura Al Kut (verifica cambio proprietà)
 - [ ] Zone di cattura per H-3, Kirkuk, Mosul
 - [ ] CSAR con elicotteri
@@ -164,6 +166,7 @@ Missione dinamica per **DCS World** ambientata in Iraq, scritta con **MOOSE 2026
 
 | Data | Versione | Modifica |
 |---|---|---|
+| 12 Giu 2026 | **2.6** | Nuova versione missione `LOREAIR IRAQ - DM V2.6.miz` — versioni precedenti archiviate in `versioni-precedenti/` |
 | 04 Mag 2026 | 2.5 | Nuova versione missione `LOREAIR IRAQ - DM V2.5.miz` — fix spawn RED/convoy on-demand (AlKutCapture v1.2) |
 | 03 Mag 2026 | 2.4b | Fix AlKutCapture v1.2: spawn RedGroundAlKut + BlueConvoyAlKut solo al primo ingresso aereo BLUE in zona |
 | 26 Apr 2026 | 2.1 | Corregge nome file missione: `LOREAIR IRAQ - DM V2.4.miz` |
